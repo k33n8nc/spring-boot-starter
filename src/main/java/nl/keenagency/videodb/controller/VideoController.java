@@ -33,14 +33,12 @@ public class VideoController {
     public List<VideoDTO> findByCategories(@RequestParam("id") List<Integer> id,
                                            @RequestParam(value = "rule", defaultValue = "any") String rule) {
         List<Category> categories = categoryRepository.findAllById(id);
-
         List<Video> videos;
         if ("all".equalsIgnoreCase(rule)) {
             videos = videoRepository.findByCategoriesInAnd(categories, id.size());
         } else {
             videos = videoRepository.findByCategoriesIn(categories);
         }
-
         return videoMapper.toVideoDTOList(videos);
     }
 
@@ -87,15 +85,14 @@ public class VideoController {
     @DeleteMapping("/videos/{id}")
     public Video deleteVideo(@PathVariable int id) {
         Video tempVideo = videoRepository.findById(id);
-//             .orElseThrow(() -> new ResourceNotFoundException("Video not found with id: " + id));
 
         if (tempVideo == null) {
-            throw new RuntimeException("Customer id not found - " + id);
+            throw new RuntimeException("Video id not found - " + id);
         }
         tempVideo.getCategories().clear();
         videoRepository.save(tempVideo);
         videoRepository.deleteById(id);
-//      return "Deleted customer id - " + id + "Object: " + tempVideo;
+//      return "Deleted video id - " + id + "Object: " + tempVideo;
         return tempVideo;
     }
 
